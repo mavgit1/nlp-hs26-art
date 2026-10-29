@@ -8,4 +8,7 @@ for s in 0 1 2; do
     uv run python scripts/train.py --tags final --model bag --format score --interactions true --hidden 512 --lr 0.001 --seed $s
     uv run python scripts/train.py --tags baseline --model bag --format score --hyp-only true --hidden 512 --lr 0.001 --seed $s
   fi
+  if [[ $which == all || $which == rnn ]]; then
+    uv run python scripts/train.py --tags final --model rnn --format score --cell gru --bidirectional true --dropout 0.5 --lr 0.001 --seed $s
+  fi
 done
