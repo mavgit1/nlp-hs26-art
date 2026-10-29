@@ -13,7 +13,7 @@ for r in wandb.Api().runs(path):
     cfg = {k: v for k, v in r.config.items() if not k.startswith("_")}
     rows.append({"name": r.name, "id": r.id, "sweep": r.sweep.name if r.sweep else "", "tags": " ".join(r.tags),
                  **cfg, **{k: r.summary.get(k) for k in ("best/val/loss", "best/val/acc", "best/epoch",
-                                                          "trainable_params", "test/acc")}})
+                                                          "trainable_params", "validation_eval/acc", "test_eval/acc")}})
 df = pd.DataFrame(rows).sort_values("best/val/loss")
 os.makedirs("results", exist_ok=True)
 df.to_csv("results/runs.csv", index=False)
