@@ -1,7 +1,14 @@
 # Model 1, all four parts concatenated -> 2 logits
 name: bag-concat
 program: scripts/train.py
-command: [uv, run, python, ${program}, --tags, sweep, ${args}]
+command:
+  - uv
+  - run
+  - python
+  - "${program}"
+  - --tags
+  - sweep
+  - "${args}"
 method: grid
 metric: {name: best/val/loss, goal: minimize}
 parameters:

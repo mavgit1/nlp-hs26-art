@@ -1,7 +1,14 @@
 # Model 2: input format, cell type, learning rate
 name: rnn-base
 program: scripts/train.py
-command: [uv, run, python, ${program}, --tags, sweep, ${args}]
+command:
+  - uv
+  - run
+  - python
+  - "${program}"
+  - --tags
+  - sweep
+  - "${args}"
 method: grid
 metric: {name: best/val/loss, goal: minimize}
 parameters:
