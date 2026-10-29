@@ -1,0 +1,20 @@
+# Model 2, score format, GRU: regularisation and direction against early overfitting
+name: rnn-tune
+program: scripts/train.py
+command:
+  - uv
+  - run
+  - python
+  - "${program}"
+  - --tags
+  - sweep
+  - "${args}"
+method: grid
+metric: {name: best/val/loss, goal: minimize}
+parameters:
+  model: {value: rnn}
+  format: {value: score}
+  cell: {value: gru}
+  bidirectional: {values: [false, true]}
+  dropout: {values: [0.2, 0.5]}
+  lr: {values: [0.0003, 0.001]}
