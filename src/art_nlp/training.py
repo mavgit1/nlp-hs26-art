@@ -43,7 +43,10 @@ class Config:
             arch = f"bag-{'hyponly' if self.hyp_only else self.format}{'-ix' if self.interactions else ''}-h{self.hidden}"
         else:
             arch = f"rnn-{self.format}-{self.cell}{'-bi' if self.bidirectional else ''}-h{self.hidden}"
-        return f"{arch}-lr{self.lr:g}-d{self.dropout:g}-s{self.seed}"
+        extra = "" if self.batch_size == 64 else f"-b{self.batch_size}"
+        if Path(self.embeddings).stem != "glove-cased-split":
+            extra += f"-{Path(self.embeddings).stem}"
+        return f"{arch}-lr{self.lr:g}-d{self.dropout:g}{extra}-s{self.seed}"
 
 
 def device() -> torch.device:
