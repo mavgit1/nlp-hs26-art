@@ -21,6 +21,7 @@ class Config:
     model: str = "bag"  # bag | rnn
     format: str = "score"  # score | concat
     interactions: bool = False  # bag only
+    hyp_only: bool = False  # bag only: ignore observations
     cell: str = "lstm"  # rnn only
     bidirectional: bool = False  # rnn only
     hidden: int = 256  # bag: classifier hidden; rnn: RNN hidden
@@ -39,7 +40,7 @@ class Config:
 
     def run_name(self) -> str:
         if self.model == "bag":
-            arch = f"bag-{self.format}{'-ix' if self.interactions else ''}-h{self.hidden}"
+            arch = f"bag-{'hyponly' if self.hyp_only else self.format}{'-ix' if self.interactions else ''}-h{self.hidden}"
         else:
             arch = f"rnn-{self.format}-{self.cell}{'-bi' if self.bidirectional else ''}-h{self.hidden}"
         return f"{arch}-lr{self.lr:g}-d{self.dropout:g}-s{self.seed}"
@@ -62,7 +63,7 @@ def load_embeddings(path: str) -> tuple[Vocab, torch.Tensor, dict]:
 
 def build_model(cfg: Config, matrix: torch.Tensor) -> torch.nn.Module:
     if cfg.model == "bag":
-        return BagModel(matrix, cfg.format, cfg.hidden, cfg.dropout, cfg.interactions)
+        return BagModel(matrix, cfg.format, cfg.hidden, cfg.dropout, cfg.interactions, cfg.hyp_only)
     return RNNModel(matrix, cfg.format, cfg.cell, cfg.hidden, cfg.clf_hidden, cfg.dropout, cfg.bidirectional)
 
 

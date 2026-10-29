@@ -28,6 +28,11 @@ def test_bag_shapes_and_frozen(fmt, interactions):
     assert not m.emb.weight.requires_grad
 
 
+def test_bag_hyp_only_ignores_observations():
+    m, b = BagModel(MATRIX, "score", 16, 0.0, hyp_only=True).eval(), bag_batch()
+    assert torch.allclose(m(**b), m(**{**b, "obs1": b["obs1"].flip(0), "obs2": b["obs2"].flip(0)}))
+
+
 def test_bag_score_swapping_hypotheses_swaps_scores():
     m, b = BagModel(MATRIX, "score", 16, 0.0, interactions=True).eval(), bag_batch()
     assert torch.allclose(m(**b).flip(1), m(**swap(b, "hyps")))

@@ -20,15 +20,17 @@ class BagModel(nn.Module):
     """Model 1: averaged frozen word embeddings per text part + classifier.
 
     score: one score per hypothesis from [o1, o2, h] (+ h*o1, h*o2), softmax over both.
+    hyp_only: score from h alone, to measure hypothesis-only artifacts.
     concat: [o1, o2, h1, h2] -> 2 logits.
     """
 
-    def __init__(self, matrix: torch.Tensor, fmt: str, hidden: int, dropout: float, interactions: bool = False):
+    def __init__(self, matrix: torch.Tensor, fmt: str, hidden: int, dropout: float, interactions: bool = False,
+                 hyp_only: bool = False):
         super().__init__()
-        self.fmt, self.interactions = fmt, interactions
+        self.fmt, self.interactions, self.hyp_only = fmt, interactions, hyp_only
         self.emb = frozen_embedding(matrix)
         d = matrix.shape[1]
-        d_in = (5 if interactions else 3) * d if fmt == "score" else 4 * d
+        d_in = (1 if hyp_only else 5 if interactions else 3) * d if fmt == "score" else 4 * d
         self.clf = Classifier(d_in, hidden, 1 if fmt == "score" else 2, dropout)
 
     def mean(self, ids: torch.Tensor) -> torch.Tensor:
@@ -39,6 +41,8 @@ class BagModel(nn.Module):
         o1, o2, h = self.mean(obs1), self.mean(obs2), self.mean(hyps)
         if self.fmt == "concat":
             return self.clf(torch.cat([o1, o2, h[:, 0], h[:, 1]], -1))
+        if self.hyp_only:  # baseline: ignores the observations
+            return self.clf(h).squeeze(-1)
         o1, o2 = o1.unsqueeze(1).expand_as(h), o2.unsqueeze(1).expand_as(h)
         parts = [o1, o2, h] + ([h * o1, h * o2] if self.interactions else [])
         return self.clf(torch.cat(parts, -1)).squeeze(-1)
