@@ -1,0 +1,8 @@
+# Local notes
+private/
+
+# Editor / agent workspace
+.claude/
+
+# Secrets (W&B API key etc.)
+.env
