@@ -24,8 +24,9 @@ uv run pytest
    (or set `ART_EMBEDDINGS`); URLs are in `src/art_nlp/embeddings.py`.
 3. Compare embedding coverage: `uv run python scripts/embedding_coverage.py`
    (writes `results/embedding_coverage.md`)
-4. Cache the chosen embedding matrix, e.g.
-   `uv run python scripts/build_embeddings.py --embedding fasttext --no-split`
+4. Cache the chosen embedding matrix (GloVe 840B, cased, contractions split:
+   best token coverage, keeps `n't` and punctuation):
+   `uv run python scripts/build_embeddings.py --embedding glove`
 
 ## Sources
 
