@@ -1,0 +1,4 @@
+course_split,n,in_original_train,in_original_validation
+train,16801,1.0000,0.0000
+validation,1000,1.0000,0.0000
+test,1532,0.0000,1.0000
