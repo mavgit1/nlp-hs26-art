@@ -18,8 +18,10 @@ Mean ± std over 3 seeds. Test was evaluated once, after all choices were made o
 | 2: 2-layer bi-GRU over O1 `<sep>` H `<sep>` O2 | 74.0 ± 0.8 | **54.5 ± 0.6** | 57 |
 | baseline: averaged embeddings of the hypothesis only | 69.3 ± 0.2 | 52.2 ± 0.4 | – |
 
-- Validation pairs are minimal edits (median 4 differing words), test pairs are not
-  (median 13); validation accuracy does not transfer to test.
+- The course test split is exactly the original ART dev set; train and validation come
+  from the original train split (`results/split_origin.csv`). Validation pairs are
+  minimal edits (median 4 differing words), test pairs are not (median 13), so
+  validation accuracy does not transfer to test.
 - The hypothesis-only baseline reaches 69% on validation: most of the signal is
   in hypothesis artifacts, not in reasoning about O1 and O2.
 - Model 2 beats model 1 on negation and outcome edits, but not on entity swaps
