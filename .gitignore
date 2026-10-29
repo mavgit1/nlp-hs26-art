@@ -17,3 +17,8 @@ __pycache__/
 # Generated artefacts
 artifacts/
 wandb/
+
+# Notes stay local; only README and the required EXPECTATIONS are tracked
+*.md
+!README.md
+!EXPECTATIONS.md

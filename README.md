@@ -23,7 +23,7 @@ uv run pytest
 2. Download the pretrained embeddings into `~/.cache/nlp-hs26-art/embeddings`
    (or set `ART_EMBEDDINGS`); URLs are in `src/art_nlp/embeddings.py`.
 3. Compare embedding coverage: `uv run python scripts/embedding_coverage.py`
-   (writes `results/embedding_coverage.md`)
+   (writes `results/embedding_coverage.csv`)
 4. Cache the chosen embedding matrix (GloVe 840B, cased, contractions split:
    best token coverage, keeps `n't` and punctuation):
    `uv run python scripts/build_embeddings.py --embedding glove`

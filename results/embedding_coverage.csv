@@ -1,0 +1,13 @@
+embedding,tokenizer,type_coverage,token_coverage,token_coverage_lower_fallback,top_missing
+fasttext,cased/split,0.9817,0.9945,0.9945,n't:3225 Shalil:4 Tanice:4 BunnBunn:4 Loraline:4 Benisha:4 saded:3 forgeted:3 inessentialed:3 Trichelle:3 Eerin:3 Tuie:3 SnowGirl:3 Lamron:3 Kenden:3
+fasttext,cased/nosplit,0.9271,0.9898,0.9898,couldn't:605 wasn't:437 Gina's:192 wouldn't:130 hadn't:88 Year's:88 Amy's:85 friend's:85 Bob's:68 he'd:59 Tim's:56 Tom's:55 Mary's:50 Jim's:49 she'd:47
+fasttext,lower/split,0.9738,0.9941,0.9941,n't:3225 lewy:7 zaiden:7 hailie:6 antonela:5 fariah:5 jorie:5 myah:4 mahlon:4 seaver:4 shalil:4 stassi:4 jacelyn:4 klea:4 lamay:4
+fasttext,lower/nosplit,0.9175,0.9892,0.9892,couldn't:605 wasn't:437 gina's:194 wouldn't:130 year's:98 hadn't:88 amy's:85 friend's:85 bob's:68 i'm:65 he'd:61 tim's:56 tom's:55 she'd:52 mary's:50
+glove,cased/split,0.9810,0.9994,0.9994,�:8 Fariah:5 Shalil:4 't:4 Marisse:4 Tanice:4 BunnBunn:4 'mores:4 Loraline:4 Benisha:4 forgeted:3 'clock:3 inessentialed:3 Trichelle:3 Eerin:3
+glove,cased/nosplit,0.9264,0.9896,0.9896,couldn't:605 wasn't:437 Gina's:192 wouldn't:130 hadn't:88 Year's:88 Amy's:85 friend's:85 Bob's:68 he'd:59 Tim's:56 Tom's:55 Mary's:50 Jim's:49 she'd:47
+glove,lower/split,0.9756,0.9991,0.9991,�:8 zaiden:7 antonela:5 fariah:5 mahlon:4 shalil:4 't:4 kelsea:4 stassi:4 jacelyn:4 klea:4 lamay:4 marisse:4 quex:4 drita:4
+glove,lower/nosplit,0.9193,0.9891,0.9891,couldn't:605 wasn't:437 gina's:194 wouldn't:130 year's:98 hadn't:88 amy's:85 friend's:85 bob's:68 i'm:65 he'd:61 tim's:56 tom's:55 she'd:52 mary's:50
+word2vec,cased/split,0.9432,0.7833,0.7834,".:65575 to:23004 a:19733 and:13074 ,:6077 of:5694 's:4818 !:1777 "":139 ':81 10:69 20:64 didnt:53 100:44 -:43"
+word2vec,cased/nosplit,0.8953,0.7813,0.7815,".:65575 to:23004 a:19733 and:13074 ,:6077 of:5694 !:1777 Gina's:192 "":139 Year's:88 Amy's:85 friend's:85 ':82 10:69 Bob's:68"
+word2vec,lower/split,0.8911,0.7761,0.7761,".:65575 to:23081 a:20886 and:13197 ,:6077 of:5694 's:4821 !:1777 "":139 ':81 10:69 20:64 didnt:54 tami:53 maddie:46"
+word2vec,lower/nosplit,0.8448,0.7742,0.7742,".:65575 to:23081 a:20883 and:13197 ,:6077 of:5694 !:1777 gina's:194 "":139 amy's:85 friend's:85 ':82 10:69 bob's:68 i'm:65"

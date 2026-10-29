@@ -1,4 +1,5 @@
 """Coverage of the train text by each pretrained embedding and tokenizer variant."""
+import csv
 from collections import Counter
 from itertools import product
 from pathlib import Path
@@ -26,13 +27,12 @@ for emb in SOURCES:
                      sum(c[w] for w in hit | fallback) / n))
         oov[emb, name] = [(w, k) for w, k in c.most_common() if w not in vectors][:15]
 
-lines = ["# Embedding coverage on train", "",
-         "| embedding | tokenizer | type coverage | token coverage | token coverage + lowercase fallback |",
-         "|---|---|---|---|---|"]
-lines += [f"| {e} | {v} | {a:.1%} | {b:.1%} | {c:.1%} |" for e, v, a, b, c in rows]
-lines += ["", "## Most frequent missing tokens", ""]
-lines += [f"- **{e} {v}**: " + ", ".join(f"`{w}` ({k})" for w, k in ws) for (e, v), ws in oov.items()]
-out = Path("results/embedding_coverage.md")
+out = Path("results/embedding_coverage.csv")
 out.parent.mkdir(exist_ok=True)
-out.write_text("\n".join(lines) + "\n")
+with out.open("w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["embedding", "tokenizer", "type_coverage", "token_coverage", "token_coverage_lower_fallback",
+                "top_missing"])
+    for e, v, a, b, c in rows:
+        w.writerow([e, v, f"{a:.4f}", f"{b:.4f}", f"{c:.4f}", " ".join(f"{t}:{k}" for t, k in oov[e, v])])
 print(out.read_text())
