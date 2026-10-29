@@ -1,0 +1,12 @@
+# Model 1, one score per hypothesis: learning rate, width, interaction features
+name: bag-score
+program: scripts/train.py
+command: [uv, run, python, ${program}, --tags, sweep, ${args}]
+method: grid
+metric: {name: best/val/loss, goal: minimize}
+parameters:
+  model: {value: bag}
+  format: {value: score}
+  interactions: {values: [false, true]}
+  hidden: {values: [128, 512]}
+  lr: {values: [0.0001, 0.0003, 0.001, 0.003]}

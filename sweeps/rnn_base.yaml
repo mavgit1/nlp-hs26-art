@@ -1,0 +1,11 @@
+# Model 2: input format, cell type, learning rate
+name: rnn-base
+program: scripts/train.py
+command: [uv, run, python, ${program}, --tags, sweep, ${args}]
+method: grid
+metric: {name: best/val/loss, goal: minimize}
+parameters:
+  model: {value: rnn}
+  format: {values: [score, concat]}
+  cell: {values: [lstm, gru]}
+  lr: {values: [0.0003, 0.001, 0.003]}
