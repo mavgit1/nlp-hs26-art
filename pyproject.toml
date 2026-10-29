@@ -1,0 +1,28 @@
+[project]
+name = "art-nlp"
+version = "0.1.0"
+description = "Project 1 (NLP HS26): ART with word embeddings and RNNs"
+authors = [
+    { name = "Marvin Huber", email = "146104145+mavgit1@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=5.1.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.4",
+    "pandas>=3.1.0",
+    "python-dotenv>=1.2.4",
+    "torch>=2.15.0",
+    "wandb>=0.31.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.9,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "nbconvert>=7.17.2",
+    "pytest>=9.2.0",
+]

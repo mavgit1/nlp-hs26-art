@@ -6,3 +6,14 @@ private/
 
 # Secrets (W&B API key etc.)
 .env
+
+# Python / tooling
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+
+# Generated artefacts
+artifacts/
+wandb/
