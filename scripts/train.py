@@ -25,6 +25,8 @@ else:
     with wandb.init(entity=os.environ.get("WANDB_ENTITY", "marvin-huber-hochschule-luzern"),
                     project=os.environ.get("WANDB_PROJECT", "nlp-hs26-art-p1"),
                     name=cfg.run_name(), group=f"{cfg.model}-{cfg.format}", tags=tags, config=asdict(cfg)) as run:
+        run.define_metric("train/*", step_metric="epoch")
+        run.define_metric("val/*", step_metric="epoch")
         # sweeps may override config values
         cfg = Config(**{**asdict(cfg), **dict(run.config)})
         run.name = cfg.run_name()
