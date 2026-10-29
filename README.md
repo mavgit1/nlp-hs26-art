@@ -26,6 +26,11 @@ Mean ± std over 3 seeds. Test was evaluated once, after all choices were made o
   in hypothesis artifacts, not in reasoning about O1 and O2.
 - Model 2 beats model 1 on negation and outcome edits, but not on entity swaps
   (`notebooks/02_results.ipynb`).
+- Ablations (`scripts/ablation_runs.sh`): hidden size, dropout and batch size around the
+  final configs change validation loss little or for the worse. fastText helps model 1
+  (75.3 ± 0.6 val acc) but makes the RNN worse and unstable (one of three seeds never
+  learned); both models must share embeddings, so GloVe stays. The runner-up RNN config
+  scores the same over 3 seeds (73.7 ± 0.9), so the seed-0 selection is not biased.
 
 Experiment tracking (W&B): saved views *Project 1: final models* and *Project 1: sweeps*
 in `marvin-huber-hochschule-luzern/nlp-hs26-art-p1`.
@@ -54,7 +59,8 @@ W&B logging needs `wandb login`. The optional edit-type labelling needs
    `uv run python scripts/build_embeddings.py --embedding glove`
 5. Sweeps: `uv run wandb sweep sweeps/<name>.yaml`, then `uv run wandb agent <id>`
    (`bag_score`, `bag_concat`, `rnn_base`, `rnn_tune`)
-6. Final runs, 3 seeds each: `scripts/final_runs.sh`
+6. Final runs, 3 seeds each: `scripts/final_runs.sh`; ablations: `scripts/ablation_runs.sh`
+   (needs `build_embeddings.py --embedding fasttext --no-split` first)
 7. Evaluate (test only once):
    `uv run python scripts/evaluate.py artifacts/checkpoints/<run>.pt --split test`
 8. Export runs and build the W&B views: `scripts/collect_runs.py`, `scripts/workspace_views.py`
