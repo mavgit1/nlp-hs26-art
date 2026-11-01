@@ -16,7 +16,7 @@ Mean ± std over 3 seeds. Test was evaluated once, after all choices were made o
 |---|---|---|---|
 | 1: averaged embeddings, score per hypothesis, interaction features | 73.6 ± 0.7 | **53.5 ± 0.4** | 53 |
 | 2: 2-layer bi-GRU over O1 `<sep>` H `<sep>` O2 | 74.0 ± 0.8 | **54.5 ± 0.6** | 57 |
-| baseline: averaged embeddings of the hypothesis only | 69.3 ± 0.2 | 52.2 ± 0.4 | – |
+| Baseline: hypothesis only (model 1 without O1, O2) | 69.3 ± 0.2 | 52.2 ± 0.4 | – |
 
 - The course test split is exactly the original ART dev set; train and validation come
   from the original train split (`results/split_origin.csv`). Validation pairs are
