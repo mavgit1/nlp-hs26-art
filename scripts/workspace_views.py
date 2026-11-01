@@ -65,4 +65,5 @@ for view, url in ((final, args.final_url), (sweeps, args.sweeps_url)):
         old.name, old.sections, old.settings, old.runset_settings = (
             view.name, view.sections, view.settings, view.runset_settings)
         view = old
-    print(view.name, view.save().url)
+    url = view.save().url  # forge serves the app under /wandb/
+    print(view.name, url.replace("forge.coreweave.com/", "forge.coreweave.com/wandb/", 1) if "/wandb/" not in url else url)
