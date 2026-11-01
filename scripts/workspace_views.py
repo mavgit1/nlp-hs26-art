@@ -1,8 +1,11 @@
-"""Create the W&B saved workspace views for Project 1 and print their URLs.
+"""Create (or update in place) the W&B saved workspace views for Project 1.
+
+Re-run after new runs: pass the view URLs to keep the links stable.
 
 final view: only runs tagged final/baseline visible; all runs listed by val loss.
 sweeps view: every sweep run visible, to compare hyperparameters.
 """
+import argparse
 import os
 
 import wandb
@@ -11,6 +14,11 @@ import wandb_workspaces.workspaces as ws
 
 ENTITY = os.environ.get("WANDB_ENTITY", "marvin-huber-hochschule-luzern")
 PROJECT = os.environ.get("WANDB_PROJECT", "nlp-hs26-art-p1")
+
+p = argparse.ArgumentParser()
+p.add_argument("--final-url", help="existing final view to update")
+p.add_argument("--sweeps-url", help="existing sweeps view to update")
+args = p.parse_args()
 
 runs = [r for r in wandb.Api().runs(f"{ENTITY}/{PROJECT}") if r.state == "finished"]
 
@@ -51,5 +59,10 @@ sweeps = ws.Workspace(
               curves("Validation", train=False), curves("Training", train=True)],
     settings=settings, runset_settings=runset(lambda r: "sweep" in r.tags))
 
-for view in (final, sweeps):
+for view, url in ((final, args.final_url), (sweeps, args.sweeps_url)):
+    if url:  # keep the saved view's identity, replace its contents
+        old = ws.Workspace.from_url(url)
+        old.name, old.sections, old.settings, old.runset_settings = (
+            view.name, view.sections, view.settings, view.runset_settings)
+        view = old
     print(view.name, view.save().url)
