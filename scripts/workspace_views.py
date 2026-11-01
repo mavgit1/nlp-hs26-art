@@ -23,6 +23,10 @@ args = p.parse_args()
 runs = [r for r in wandb.Api().runs(f"{ENTITY}/{PROJECT}") if r.state == "finished"]
 
 
+COLORS = {"Model 1: avg. embeddings": "#2f5fd0", "Model 2: bi-GRU": "#e07b28",
+          "Baseline: hypothesis only": "#9aa3b2"}  # same as the result figures
+
+
 def variant(r) -> str:
     if r.config.get("hyp_only"):
         return "Baseline: hypothesis only"
@@ -48,9 +52,9 @@ def curves(title: str, train: bool, grouped: bool = False) -> ws.Section:
         wr.LinePlot(title=f"{split} accuracy", x="epoch", y=[f"{split}/acc"], **opts)])
 
 
-def runset(visible, groupby=(), filters="") -> ws.RunsetSettings:
+def runset(visible, groupby=(), filters="", group_colors=None) -> ws.RunsetSettings:
     return ws.RunsetSettings(
-        groupby=list(groupby), filters=filters,
+        groupby=list(groupby), filters=filters, group_colors=group_colors or {},
         order=[ws.Ordering(ws.Summary("best/val/loss"), ascending=True)],
         pinned_columns=["run:displayName", "summary:best/val/loss", "summary:best/val/acc", "summary:best/epoch"],
         run_settings={r.id: ws.RunSettings(disabled=not visible(r)) for r in runs})
@@ -68,7 +72,7 @@ final = ws.Workspace(
     # one group per model: 3 seeds each
     runset_settings=runset(lambda r: bool({"final", "baseline"} & set(r.tags)),
                            groupby=[ws.Config("variant")],
-                           filters=[ws.Tags().isin(["final", "baseline"])]))
+                           filters=[ws.Tags().isin(["final", "baseline"])], group_colors=COLORS))
 
 sweeps = ws.Workspace(
     entity=ENTITY, project=PROJECT, name="Project 1: sweeps",
