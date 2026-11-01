@@ -2,7 +2,7 @@
 
 Re-run after new runs: pass the view URLs to keep the links stable.
 
-final view: only runs tagged final/baseline visible; all runs listed by val loss.
+final view: only runs tagged final/baseline, grouped by model (mean ± std over seeds).
 sweeps view: every sweep run visible, to compare hyperparameters.
 """
 import argparse
@@ -23,17 +23,22 @@ args = p.parse_args()
 runs = [r for r in wandb.Api().runs(f"{ENTITY}/{PROJECT}") if r.state == "finished"]
 
 
-def curves(title: str, train: bool) -> ws.Section:
+SEED_BAND = {"groupby_aggfunc": "mean", "groupby_rangefunc": "stddev"}  # mean curve, ±std over seeds
+
+
+def curves(title: str, train: bool, grouped: bool = False) -> ws.Section:
     # train is logged every 50 steps and noisy; validation once per epoch, unsmoothed
-    smooth = {"smoothing_type": "exponential", "smoothing_factor": 0.6} if train else {"smoothing_type": "none"}
+    opts = {"smoothing_type": "exponential", "smoothing_factor": 0.6} if train else {"smoothing_type": "none"}
+    opts |= SEED_BAND if grouped else {}
     split = "train" if train else "val"
     return ws.Section(name=title, is_open=True, layout_settings=ws.SectionLayoutSettings(columns=2, rows=1), panels=[
-        wr.LinePlot(title=f"{split} loss", x="epoch", y=[f"{split}/loss"], **smooth),
-        wr.LinePlot(title=f"{split} accuracy", x="epoch", y=[f"{split}/acc"], **smooth)])
+        wr.LinePlot(title=f"{split} loss", x="epoch", y=[f"{split}/loss"], **opts),
+        wr.LinePlot(title=f"{split} accuracy", x="epoch", y=[f"{split}/acc"], **opts)])
 
 
-def runset(visible) -> ws.RunsetSettings:
+def runset(visible, groupby=(), filters="") -> ws.RunsetSettings:
     return ws.RunsetSettings(
+        groupby=list(groupby), filters=filters,
         order=[ws.Ordering(ws.Summary("best/val/loss"), ascending=True)],
         pinned_columns=["run:displayName", "summary:best/val/loss", "summary:best/val/acc", "summary:best/epoch"],
         run_settings={r.id: ws.RunSettings(disabled=not visible(r)) for r in runs})
@@ -43,10 +48,15 @@ settings = ws.WorkspaceSettings(x_axis="epoch", max_runs=20, tooltip_number_of_r
 
 final = ws.Workspace(
     entity=ENTITY, project=PROJECT, name="Project 1: final models",
-    sections=[curves("Validation", train=False), curves("Training", train=True),
+    sections=[curves("Validation", train=False, grouped=True), curves("Training", train=True, grouped=True),
               ws.Section(name="Final evaluation", is_open=True, panels=[
-                  wr.BarPlot(title="validation vs test accuracy", metrics=["validation_eval/acc", "test_eval/acc"], orientation="h")])],
-    settings=settings, runset_settings=runset(lambda r: bool({"final", "baseline"} & set(r.tags))))
+                  wr.BarPlot(title="validation vs test accuracy", metrics=["validation_eval/acc", "test_eval/acc"],
+                             orientation="h", **SEED_BAND)])],
+    settings=settings,
+    # one group per model: 3 seeds each
+    runset_settings=runset(lambda r: bool({"final", "baseline"} & set(r.tags)),
+                           groupby=[ws.Config("model"), ws.Config("hyp_only")],
+                           filters=[ws.Tags().isin(["final", "baseline"])]))
 
 sweeps = ws.Workspace(
     entity=ENTITY, project=PROJECT, name="Project 1: sweeps",
