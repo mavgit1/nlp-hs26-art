@@ -23,6 +23,18 @@ args = p.parse_args()
 runs = [r for r in wandb.Api().runs(f"{ENTITY}/{PROJECT}") if r.state == "finished"]
 
 
+def variant(r) -> str:
+    if r.config.get("hyp_only"):
+        return "Baseline: hypothesis only"
+    return "Model 1: avg. embeddings" if r.config["model"] == "bag" else "Model 2: bi-GRU"
+
+
+for r in runs:  # readable group labels for the final view
+    if {"final", "baseline"} & set(r.tags) and r.config.get("variant") != variant(r):
+        r.config["variant"] = variant(r)
+        r.update()
+
+
 SEED_BAND = {"groupby_aggfunc": "mean", "groupby_rangefunc": "stddev"}  # mean curve, ±std over seeds
 
 
@@ -55,7 +67,7 @@ final = ws.Workspace(
     settings=settings,
     # one group per model: 3 seeds each
     runset_settings=runset(lambda r: bool({"final", "baseline"} & set(r.tags)),
-                           groupby=[ws.Config("model"), ws.Config("hyp_only")],
+                           groupby=[ws.Config("variant")],
                            filters=[ws.Tags().isin(["final", "baseline"])]))
 
 sweeps = ws.Workspace(
